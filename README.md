@@ -1,5 +1,6 @@
 # team-member
 A Team-Member Management Application
+Uses Python-Django framework for interfacing with the Database and Django Rest Framework for structuring APIs
 
 ### Project Environment Setup
 1. Clone the repo `git clone git@github.com:Priyamvada/team_member.git`
@@ -25,3 +26,4 @@ Ensure there were no failures while installing `mysql` or while installing `mysq
 5. Grant all privileges tp *dbadmin* for *teammember_db*: `grant all on teammember_db.* to 'dbadmin'@'%';`
 6. Reload the newly granted privileges: `flush privileges;`
 7. Run migrations into *teammember_db*: `python manage.py migrate`
+8. Create superuser (optional: only if you want to log into Django admin and verify the schema): `python manage.py createsuperuser --email admin@example.com --username admin`

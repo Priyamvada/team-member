@@ -27,3 +27,69 @@ Ensure there were no failures while installing `mysql` or while installing `mysq
 6. Reload the newly granted privileges: `flush privileges;`
 7. Run migrations into *teammember_db*: `python manage.py migrate`
 8. Create superuser (optional: only if you want to log into Django admin and verify the schema): `python manage.py createsuperuser --email admin@example.com --username admin`
+
+## Testing the APIs
+### Run the server
+- After activating the virtual environment and completing the DB setup and migration, run
+`python manage.py runserver`.
+This will try to run the server on `port: 8000`.
+- To run on a custom port, run
+`python manage.py runserver 0.0.0.0:<port>`
+
+### Create new Team Member
+##### Sample Request
+Use a post request as follows
+`curl -X POST -H "Content-Type:application/json" http://127.0.0.1:8000/api/team_members/ -d '{"first_name": "David", "last_name": "Jones", "phone_number": "+15101234567", "email": "davidjones@test.com", "role": 0}'`
+##### Sample Response
+- Returns status code 201 if success, and the entire newly created team member object with id
+- Returns status code 400 along with error message, on validation errors such as missing fields, unique constraint violations
+```json5
+{
+   "id":8,
+   "first_name":"David",
+   "last_name":"Jones",
+   "full_name":"David Jones",
+   "phone_number":"+15101234567",
+   "email":"davidjones@test.com",
+   "role":"Admin",
+   "created":"2020-12-15 06:04:56 +0000",
+   "last_modified":"2020-12-15 06:04:56 +0000"
+}
+```
+
+### Edit Team Member
+##### Sample Request
+Note the `id` of the team member to be edited. Eg: 8 from the above example.
+Use a PATCH request as follows
+`curl -X PATCH -H "Content-Type:application/json" http://127.0.0.1:8000/api/team_members/8/ -d '{"last_name": "Jones II", "role": 1}'`
+- Note: the field `role` accepts any of 2 formats - numbers `0` or `1`, or case insensitive words `admin` or `regular`
+- For example, `curl -X PATCH -H "Content-Type:application/json" http://127.0.0.1:8000/api/team_members/8/ -d '{"last_name": "Jones II", "role": "reGuLAr"}'` will also yield the same response as above.
+##### Sample Response
+- Returns status code 200 if success, and the entire updated team member object
+- Returns status code 400 along with error message, on validation errors such as missing fields, unique constraint violations
+- Returns status code 404 if the `id` passed is invalid
+```json5
+{
+   "id":8,
+   "first_name":"David",
+   "last_name":"Jones II",
+   "full_name":"David Jones II",
+   "phone_number":"+15101234567",
+   "email":"davidjones@test.com",
+   "role":"Regular",
+   "created":"2020-12-15 06:04:56 +0000",
+   "last_modified":"2020-12-15 06:38:43 +0000"
+}
+```
+
+### Delete Team Member
+##### Sample Request
+Note the `id` of the team member to be edited. Eg: 8 from the above example.
+Use a DELETE request as follows
+`curl -X DELETE http://127.0.0.1:8000/api/team_members/8/`
+##### Sample Response
+- Returns status code 204 if success, and empty object `{}` is returned.
+- Returns status code 404 if the `id` passed is invalid
+```json5
+{}
+```

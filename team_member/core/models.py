@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
+from team_member.core import managers
 
 
 class TimeStampedModel(models.Model):
@@ -24,9 +24,11 @@ class TimeStampedModel(models.Model):
 
 
 class TeamMember(TimeStampedModel):
-    class Role(models.TextChoices):
-        ADMIN = 'ADM', _('Admin')
-        REGULAR = 'REG', _('Regular')
+
+    ROLE_CHOICES = (
+        (0, _('Admin')),
+        (1, _('Regular'))
+    )
 
     first_name = models.CharField(
         "First Name",
@@ -40,18 +42,21 @@ class TeamMember(TimeStampedModel):
     )
     phone_number = models.CharField(
         "Phone Number",
-        max_length=14
+        max_length=14,
+        null=True,
+        blank=True
     )
     email = models.EmailField(
         "Email ID",
         max_length=100,
         unique=True
     )
-    role = models.CharField(
-        max_length=3,
-        choices=Role.choices,
-        default=Role.REGULAR,
+    role = models.IntegerField(
+        choices=ROLE_CHOICES,
+        default=1,
     )
+
+    objects = managers.TeamMemberManager()
 
     '''
     Returns the person's full name
@@ -59,6 +64,10 @@ class TeamMember(TimeStampedModel):
     @property
     def full_name(self):
         return '{0} {1}'.format(self.first_name, self.last_name or '')
+
+    def save(self, **kwargs):
+        self.email = self.email.lower()
+        super(TeamMember, self).save(**kwargs)
 
     class Meta:
         db_table = 'team_member'

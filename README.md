@@ -26,7 +26,7 @@ Ensure there were no failures while installing `mysql` or while installing `mysq
 5. Grant all privileges tp *dbadmin* for *teammember_db*: `grant all on teammember_db.* to 'dbadmin'@'%';`
 6. Reload the newly granted privileges: `flush privileges;`
 7. Run migrations into *teammember_db*: `python manage.py migrate`
-8. Create superuser (optional: only if you want to log into Django admin and verify the schema): `python manage.py createsuperuser --email admin@example.com --username admin`
+8. *Create superuser (optional: only if you want to log into Django admin and verify the schema): `python manage.py createsuperuser --email admin@example.com --username admin`*
 
 ## Testing the APIs
 ### Run the server
@@ -62,7 +62,7 @@ Use a post request as follows
 Note the `id` of the team member to be edited. Eg: 8 from the above example.
 Use a PATCH request as follows
 `curl -X PATCH -H "Content-Type:application/json" http://127.0.0.1:8000/api/team_members/8/ -d '{"last_name": "Jones II", "role": 1}'`
-- Note: the field `role` accepts any of 2 formats - numbers `0` or `1`, or case insensitive words `admin` or `regular`
+- Note: the field `role` accepts any of 2 formats - numbers `0` or `1`, or case insensitive words *"admin"* or *"regular"*
 - For example, `curl -X PATCH -H "Content-Type:application/json" http://127.0.0.1:8000/api/team_members/8/ -d '{"last_name": "Jones II", "role": "reGuLAr"}'` will also yield the same response as above.
 ##### Sample Response
 - Returns status code 200 if success, and the entire updated team member object

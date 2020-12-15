@@ -36,9 +36,104 @@ This will try to run the server on `port: 8000`.
 - To run on a custom port, run
 `python manage.py runserver 0.0.0.0:<port>`
 
+### List Team Members
+##### Sample Request
+Use a GET request as follows
+`curl -X GET http://127.0.0.1:8000/api/team_members/`
+##### Sample Response
+- Following is a list of sample team member objects. Note that the objects are sorted based on reverse `last_modified` (latest modified first)
+```json5
+[
+   {
+      "id":10,
+      "first_name":"Ron",
+      "last_name":null,
+      "full_name":"Ron ",
+      "phone_number":null,
+      "email":"ron@test.com",
+      "role":"Regular",
+      "created":"2020-12-15 06:24:24 +0000",
+      "last_modified":"2020-12-15 06:24:24 +0000"
+   },
+   {
+      "id":5,
+      "first_name":"G1",
+      "last_name":"B1",
+      "full_name":"G1 B1",
+      "phone_number":null,
+      "email":"g1b1@gmail.com",
+      "role":"Admin",
+      "created":"2020-12-15 05:35:32 +0000",
+      "last_modified":"2020-12-15 05:35:32 +0000"
+   },
+   {
+      "id":2,
+      "first_name":"Q",
+      "last_name":"T",
+      "full_name":"Q T",
+      "phone_number":"99999999",
+      "email":"qt@gmail.com",
+      "role":"Regular",
+      "created":"2020-12-14 22:44:00 +0000",
+      "last_modified":"2020-12-14 22:44:00 +0000"
+   },
+   {
+      "id":1,
+      "first_name":"P",
+      "last_name":"T",
+      "full_name":"P T",
+      "phone_number":null,
+      "email":"pt@gmail.com",
+      "role":"Regular",
+      "created":"2020-12-14 22:31:39 +0000",
+      "last_modified":"2020-12-14 22:31:39 +0000"
+   }
+]
+```
+- Since this project uses django-restframework, pagination can be used out of box. To enable pagination, you can add the following to `settings.py`:
+```python
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
+```
+For simplicity of the below example, I have set `PAGE_SIZE` to `2` to generate the following result. This would yield a paginated response like below
+```json5
+{
+   "count":4,
+   "next":"http://127.0.0.1:8000/api/team_members/?page=2",
+   "previous":null,
+   "results":[
+      {
+         "id":10,
+         "first_name":"Ron",
+         "last_name":null,
+         "full_name":"Ron ",
+         "phone_number":null,
+         "email":"ron@test.com",
+         "role":"Regular",
+         "created":"2020-12-15 06:24:24 +0000",
+         "last_modified":"2020-12-15 06:24:24 +0000"
+      },
+      {
+         "id":5,
+         "first_name":"G1",
+         "last_name":"B1",
+         "full_name":"G1 B1",
+         "phone_number":null,
+         "email":"g1b1@gmail.com",
+         "role":"Admin",
+         "created":"2020-12-15 05:35:32 +0000",
+         "last_modified":"2020-12-15 05:35:32 +0000"
+      }
+   ]
+}
+```
+
+
 ### Create new Team Member
 ##### Sample Request
-Use a post request as follows
+Use a POST request as follows
 `curl -X POST -H "Content-Type:application/json" http://127.0.0.1:8000/api/team_members/ -d '{"first_name": "David", "last_name": "Jones", "phone_number": "+15101234567", "email": "davidjones@test.com", "role": 0}'`
 ##### Sample Response
 - Returns status code 201 if success, and the entire newly created team member object with id

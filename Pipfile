@@ -4,9 +4,9 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django = "*"
-djangorestframework = "*"
-mysqlclient = "*"
+django = "3.1.4"
+djangorestframework = "3.12.2"
+mysqlclient = "2.0.1"
 
 [dev-packages]
 
